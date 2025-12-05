@@ -36,7 +36,7 @@ if(M()){document.getElementsByTagName("head")[0].appendChild(O(opts_.cselibVersi
     "hideElementBranding": false,
     "cssThemeVersion": 4,
     "isSafeSearchActive": false,
-    "numTopAds": 3
+    "numTopAds": 0
   },
   "protocol": "https",
   "rawCss": ".gsc-control-cse{font-family:arial, sans-serif}.gsc-control-cse .gsc-table-result{font-family:arial, sans-serif}.gsc-refinementsGradient{background:linear-gradient(to left,rgba(255,255,255,1),rgba(255,255,255,0))}",
