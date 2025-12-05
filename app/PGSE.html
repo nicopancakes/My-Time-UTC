@@ -8,7 +8,7 @@
   <script async src="https://cse.google.com/cse.js?cx=35f258c7bdf8d4e02"></script>
 
   <style>
-    /* Background from butterfly wallpapers script */
+
     body {
         background-image: url('https://files.catbox.moe/a6irx1.gif');
         background-repeat: repeat;
@@ -29,7 +29,7 @@
 
     .search-container {
         max-width: 800px;
-        margin: 150px auto 50px; /* pushed down for title at top */
+        margin: 150px auto 50px; 
         background: rgba(0, 0, 0, 0.6);
         padding: 20px;
         border: 1px solid white;
@@ -39,10 +39,10 @@
         margin-top: 20px;
     }
 
-    /* Animated Title */
+
     .animated-title {
       display: flex;
-      justify-content: center; /* center horizontally */
+      justify-content: center; 
       font-size: 48px;
       font-weight: bold;
       position: relative;
@@ -64,7 +64,7 @@
       background: white;
       width: 0;
       animation: underlineAnim 1s forwards;
-      animation-delay: 1.2s; /* starts after letters appear */
+      animation-delay: 1.2s;
     }
 
     @keyframes fadeInLetter {
@@ -82,16 +82,16 @@
 </head>
 <body>
   <div class="animated-title" id="title">
-    <!-- Letters will be inserted via JS -->
+
   </div>
 
   <div class="search-container">
-    <!-- Google CSE search box -->
+
     <gcse:search linktarget="_self"></gcse:search>
   </div>
 
   <script>
-    // Override links behavior
+
     document.addEventListener("DOMContentLoaded", () => {
       const container = document.querySelector(".gcse-search");
       if (container) {
@@ -107,14 +107,14 @@
         });
       }
 
-      // Animate title letters
+
       const titleText = "PGSEEngine";
       const titleContainer = document.getElementById("title");
 
       titleText.split("").forEach((letter, index) => {
         const span = document.createElement("span");
         span.textContent = letter;
-        span.style.animationDelay = `${index * 0.1}s`; // letters appear one by one
+        span.style.animationDelay = `${index * 0.1}s`; 
         titleContainer.appendChild(span);
       });
     });
