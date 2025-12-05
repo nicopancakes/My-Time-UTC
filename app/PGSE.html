@@ -1,1 +1,123 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>PGSEEngine</title> <script async src="https://cse.google.com/cse.js?cx=35f258c7bdf8d4e02"></script> <style> /* Background from butterfly wallpapers script */ body { background-image: url('https://files.catbox.moe/a6irx1.gif'); background-repeat: repeat; background-attachment: fixed; background-position: center; background-color: #000000; min-height: 100vh; margin: 0; color: white; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-family: Arial, sans-serif; } a { color: white; } .search-container { max-width: 800px; margin: 150px auto 50px; /* pushed down for title at top */ background: rgba(0, 0, 0, 0.6); padding: 20px; border: 1px solid white; } .gcse-searchresults-only { margin-top: 20px; } /* Animated Title */ .animated-title { display: flex; justify-content: center; /* center horizontally */ font-size: 48px; font-weight: bold; position: relative; margin-top: 20px; } .animated-title span { opacity: 0; display: inline-block; animation: fadeInLetter 0.5s forwards; } .animated-title::after { content: ""; position: absolute; bottom: -10px; left: 0; height: 3px; background: white; width: 0; animation: underlineAnim 1s forwards; animation-delay: 1.2s; /* starts after letters appear */ } @keyframes fadeInLetter { to { opacity: 1; } } @keyframes underlineAnim { to { width: 100%; } } </style> </head> <body> <div class="animated-title" id="title"> <!-- Letters will be inserted via JS --> </div> <div class="search-container"> <!-- Google CSE search box --> <gcse:search linktarget="_self"></gcse:search> </div> <script> // Override links behavior document.addEventListener("DOMContentLoaded", () => { const container = document.querySelector(".gcse-search"); if (container) { container.addEventListener("click", (e) => { const link = e.target.closest("a"); if (link) { if (!link.href.includes(window.location.hostname)) { link.target = "_blank"; } else { link.target = "_self"; } } }); } // Animate title letters const titleText = "PGSEEngine"; const titleContainer = document.getElementById("title"); titleText.split("").forEach((letter, index) => { const span = document.createElement("span"); span.textContent = letter; span.style.animationDelay = ${index * 0.1}s; // letters appear one by one titleContainer.appendChild(span); }); }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PGSEEngine</title>
+  
+  <script async src="https://cse.google.com/cse.js?cx=35f258c7bdf8d4e02"></script>
+
+  <style>
+    /* Background from butterfly wallpapers script */
+    body {
+        background-image: url('https://files.catbox.moe/a6irx1.gif');
+        background-repeat: repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-color: #000000;
+        min-height: 100vh;
+        margin: 0;
+        color: white;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-family: Arial, sans-serif;
+    }
+
+    a {
+        color: white;
+    }
+
+    .search-container {
+        max-width: 800px;
+        margin: 150px auto 50px; /* pushed down for title at top */
+        background: rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        border: 1px solid white;
+    }
+
+    .gcse-searchresults-only {
+        margin-top: 20px;
+    }
+
+    /* Animated Title */
+    .animated-title {
+      display: flex;
+      justify-content: center; /* center horizontally */
+      font-size: 48px;
+      font-weight: bold;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .animated-title span {
+      opacity: 0;
+      display: inline-block;
+      animation: fadeInLetter 0.5s forwards;
+    }
+
+    .animated-title::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      height: 3px;
+      background: white;
+      width: 0;
+      animation: underlineAnim 1s forwards;
+      animation-delay: 1.2s; /* starts after letters appear */
+    }
+
+    @keyframes fadeInLetter {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes underlineAnim {
+      to {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-title" id="title">
+    <!-- Letters will be inserted via JS -->
+  </div>
+
+  <div class="search-container">
+    <!-- Google CSE search box -->
+    <gcse:search linktarget="_self"></gcse:search>
+  </div>
+
+  <script>
+    // Override links behavior
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.querySelector(".gcse-search");
+      if (container) {
+        container.addEventListener("click", (e) => {
+          const link = e.target.closest("a");
+          if (link) {
+            if (!link.href.includes(window.location.hostname)) {
+              link.target = "_blank";
+            } else {
+              link.target = "_self";
+            }
+          }
+        });
+      }
+
+      // Animate title letters
+      const titleText = "PGSEEngine";
+      const titleContainer = document.getElementById("title");
+
+      titleText.split("").forEach((letter, index) => {
+        const span = document.createElement("span");
+        span.textContent = letter;
+        span.style.animationDelay = `${index * 0.1}s`; // letters appear one by one
+        titleContainer.appendChild(span);
+      });
+    });
+  </script>
+</body>
+</html>
