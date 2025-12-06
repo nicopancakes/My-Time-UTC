@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini OS</title>
+<style>
+html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden;}
+/* Error Screen */
+#errorScreen {
+  display:flex; justify-content:center; align-items:center; flex-direction:column;
+  height:100%; background:#f0f0f0; color:#333; user-select:none; cursor:default;
+}
+#errorScreen h1{font-size:80px;margin:0;}
+#errorScreen h2{font-size:24px;font-weight:normal;margin:10px 0;}
+#errorScreen p{color:#666;}
+/* Desktop */
+#desktop{
+  display:none;
+  height:100%;
+  width:100%;
+  background-image:url('https://files.catbox.moe/f24tzq.jpg');  
+  background-size:cover; 
+  background-position:center;
+  position:relative;
+  overflow:hidden;
+  padding:10px;
+}
+/* Icons */
+.icon{width:80px;text-align:center;color:white;margin:20px;cursor:pointer;display:inline-block;}
+.icon img{width:64px;height:64px;}
+/* Windows */
+.window{
+  position:absolute;
+  width:800px;
+  height:600px;
+  background:white;
+  color:black;
+  border:2px solid #333;
+  border-radius:8px;
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+.window header{
+  background:#333;color:white;
+  padding:5px;
+  cursor:move;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.closeBtn{cursor:pointer;font-weight:bold;}
+.appContent{flex:1;overflow:auto;}
+/* Taskbar */
+#taskbar{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:40px;
+  background:rgba(0,0,0,0.3);
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  padding:0 15px;
+  color:white;
+  font-size:14px;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+
+<!-- Error screen -->
+<div id="errorScreen">
+  <h1>404</h1>
+  <h2>Oops! This page has been deleted.</h2>
+  <p>The requested webpage could not be found on this server.</p>
+</div>
+
+<!-- Desktop -->
+<div id="desktop">
+  <!-- Icons -->
+  <div class="icon" onclick="openWindow('pgse')">
+    <img src="https://files.catbox.moe/8g18bj.png" alt="PGSE Engine">
+    <div>PGSE Engine</div>
+  </div>
+  <div class="icon" onclick="openWindow('ai')">
+    <img src="https://files.catbox.moe/31tu73.png" alt="AI Assistant">
+    <div>AI Assistant</div>
+  </div>
+  <div class="icon" onclick="openWindow('calc')">
+    <img src="https://files.catbox.moe/upfbxi.png" alt="Calculator">
+    <div>Calculator</div>
+  </div>
+  <div class="icon" onclick="openWindow('notepad')">
+    <img src="https://files.catbox.moe/hyrz6d.webp" alt="Notepad">
+    <div>Notepad</div>
+  </div>
+
+  <!-- Windows -->
+  <div class="window" id="pgse">
+    <header>PGSE Engine <span class="closeBtn" onclick="closeWindow('pgse')">X</span></header>
+    <div class="appContent" id="pgseContent"></div>
+  </div>
+
+  <div class="window" id="ai">
+    <header>AI Assistant <span class="closeBtn" onclick="closeWindow('ai')">X</span></header>
+    <div class="appContent" id="aiContent">Loading...</div>
+  </div>
+
+  <div class="window" id="calc">
+    <header>Calculator <span class="closeBtn" onclick="closeWindow('calc')">X</span></header>
+    <div class="appContent" id="calcContent">Loading...</div>
+  </div>
+
+  <div class="window" id="notepad">
+    <header>Notepad <span class="closeBtn" onclick="closeWindow('notepad')">X</span></header>
+    <div class="appContent" id="notepadContent">Loading...</div>
+  </div>
+
+  <!-- Taskbar -->
+  <div id="taskbar">
+    <span id="time"></span>
+  </div>
+</div>
+
+<!-- PGSEEngine template -->
+<template id="pgseTemplate">
+  <div class="pgseContainer">
+    <style>
+      .pgseContainer {
+        background-image: url('https://files.catbox.moe/a6irx1.gif');
+        background-repeat: repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-color: #000;
+        min-height:100%;
+        color:white;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .pgseContainer a{color:white;}
+      .pgseContainer .search-container{
+        max-width:800px;
+        margin:150px auto 50px;
+        background: rgba(0,0,0,0.6);
+        padding:20px;
+        border:1px solid white;
+      }
+      .pgseContainer .animated-title{
+        display:flex;
+        justify-content:center;
+        font-size:48px;
+        font-weight:bold;
+        position:relative;
+        margin-top:20px;
+      }
+      .pgseContainer .animated-title span{
+        opacity:0;
+        display:inline-block;
+        animation: fadeInLetter 0.5s forwards;
+      }
+      .pgseContainer .animated-title::after{
+        content:"";
+        position:absolute;
+        bottom:-10px;
+        left:0;
+        height:3px;
+        background:white;
+        width:0;
+        animation:underlineAnim 1s forwards;
+        animation-delay:1.2s;
+      }
+      @keyframes fadeInLetter{to{opacity:1;}}
+      @keyframes underlineAnim{to{width:100%;}}
+    </style>
+
+    <div class="animated-title" id="pgseTitle"></div>
+    <div class="search-container">
+      <gcse:search linktarget="_self"></gcse:search>
+    </div>
+
+    <script async src="https://cse.google.com/cse.js?cx=35f258c7bdf8d4e02"></script>
+    <script>
+      function initPGSE(container){
+          const titleContainer = container.querySelector("#pgseTitle");
+          const titleText = "PGSEEngine";
+          titleText.split("").forEach((letter,index)=>{
+              const span = document.createElement("span");
+              span.textContent = letter;
+              span.style.animationDelay = `${index*0.1}s`;
+              titleContainer.appendChild(span);
+          });
+      }
+    </script>
+  </div>
+</template>
+
+<script>
+// Triple click unlock
+let clickCount=0;
+const errorScreen=document.getElementById('errorScreen');
+const desktop=document.getElementById('desktop');
+
+errorScreen.addEventListener('click',()=>{
+  clickCount++;
+  if(clickCount===3){
+    errorScreen.style.display='none';
+    desktop.style.display='block';
+  }
+  setTimeout(()=>clickCount=0,1000);
+});
+
+// Open window
+function openWindow(id){
+  const win=document.getElementById(id);
+  win.style.display='flex';
+
+  if(id==='pgse'){
+    const template=document.getElementById('pgseTemplate');
+    const content=document.getElementById('pgseContent');
+    if(content.innerHTML===''){ 
+      const clone=template.content.cloneNode(true);
+      content.appendChild(clone);
+      initPGSE(content);
+    }
+  } else { // fetch other apps
+    const content=document.getElementById(id+'Content');
+    if(content.innerHTML==='Loading...'){
+      let url='';
+      switch(id){
+        case 'ai': url='https://raw.githubusercontent.com/nicopancakes/My-Time-UTC/refs/heads/main/app/Intel.html'; break;
+        case 'calc': url='https://raw.githubusercontent.com/nicopancakes/My-Time-UTC/refs/heads/main/app/Ca.html'; break;
+        case 'notepad': url='https://raw.githubusercontent.com/nicopancakes/My-Time-UTC/refs/heads/main/app/NtE.html'; break;
+      }
+      fetch(url)
+      .then(res=>res.text())
+      .then(html=>{ content.innerHTML=html; })
+      .catch(err=>{ content.innerHTML='Failed to load app.'; });
+    }
+  }
+}
+
+// Close window
+function closeWindow(id){ document.getElementById(id).style.display='none'; }
+
+// Draggable windows
+let dragTarget=null, offsetX=0, offsetY=0;
+function initDraggable(){
+  document.querySelectorAll('.window header').forEach(header=>{
+    header.onmousedown=function(e){
+      dragTarget=header.parentElement;
+      offsetX=e.clientX-dragTarget.offsetLeft;
+      offsetY=e.clientY-dragTarget.offsetTop;
+      dragTarget.style.zIndex=Date.now();
+    };
+  });
+}
+document.addEventListener('mousemove',e=>{
+  if(dragTarget){
+    dragTarget.style.left=(e.clientX-offsetX)+'px';
+    dragTarget.style.top=(e.clientY-offsetY)+'px';
+  }
+});
+document.addEventListener('mouseup',()=>{ dragTarget=null; });
+
+// Time & Date
+function updateTime(){
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const date = now.toLocaleDateString();
+  document.getElementById('time').textContent = `${date} ${time}`;
+}
+setInterval(updateTime, 1000);
+updateTime();
+</script>
+
+</body>
+</html>
+
