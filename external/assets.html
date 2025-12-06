@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini OS</title>
 <style>
 html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden;}
-/* Error Screen */
 #errorScreen {
   display:flex; justify-content:center; align-items:center; flex-direction:column;
   height:100%; background:#f0f0f0; color:#333; user-select:none; cursor:default;
@@ -14,7 +12,6 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
 #errorScreen h1{font-size:80px;margin:0;}
 #errorScreen h2{font-size:24px;font-weight:normal;margin:10px 0;}
 #errorScreen p{color:#666;}
-/* Desktop */
 #desktop{
   display:none;
   height:100%;
@@ -26,10 +23,8 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
   overflow:hidden;
   padding:10px;
 }
-/* Icons */
 .icon{width:80px;text-align:center;color:white;margin:20px;cursor:pointer;display:inline-block;}
 .icon img{width:64px;height:64px;}
-/* Windows */
 .window{
   position:absolute;
   width:800px;
@@ -51,7 +46,6 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
 }
 .closeBtn{cursor:pointer;font-weight:bold;}
 .appContent{flex:1;overflow:auto;}
-/* Taskbar */
 #taskbar{
   position:absolute;
   bottom:0;
@@ -71,16 +65,14 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
 </head>
 <body>
 
-<!-- Error screen -->
 <div id="errorScreen">
   <h1>404</h1>
   <h2>Oops! This page has been deleted.</h2>
   <p>The requested webpage could not be found on this server.</p>
 </div>
 
-<!-- Desktop -->
 <div id="desktop">
-  <!-- Icons -->
+
   <div class="icon" onclick="openWindow('pgse')">
     <img src="https://files.catbox.moe/8g18bj.png" alt="PGSE Engine">
     <div>PGSE Engine</div>
@@ -98,7 +90,6 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
     <div>Notepad</div>
   </div>
 
-  <!-- Windows -->
   <div class="window" id="pgse">
     <header>PGSE Engine <span class="closeBtn" onclick="closeWindow('pgse')">X</span></header>
     <div class="appContent" id="pgseContent"></div>
@@ -119,13 +110,11 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
     <div class="appContent" id="notepadContent">Loading...</div>
   </div>
 
-  <!-- Taskbar -->
   <div id="taskbar">
     <span id="time"></span>
   </div>
 </div>
 
-<!-- PGSEEngine template -->
 <template id="pgseTemplate">
   <div class="pgseContainer">
     <style>
@@ -198,7 +187,6 @@ html, body {margin:0; height:100%; font-family:Arial,sans-serif; overflow:hidden
 </template>
 
 <script>
-// Triple click unlock
 let clickCount=0;
 const errorScreen=document.getElementById('errorScreen');
 const desktop=document.getElementById('desktop');
@@ -225,7 +213,7 @@ function openWindow(id){
       content.appendChild(clone);
       initPGSE(content);
     }
-  } else { // fetch other apps
+  } else {
     const content=document.getElementById(id+'Content');
     if(content.innerHTML==='Loading...'){
       let url='';
@@ -242,10 +230,8 @@ function openWindow(id){
   }
 }
 
-// Close window
 function closeWindow(id){ document.getElementById(id).style.display='none'; }
 
-// Draggable windows
 let dragTarget=null, offsetX=0, offsetY=0;
 function initDraggable(){
   document.querySelectorAll('.window header').forEach(header=>{
@@ -265,7 +251,6 @@ document.addEventListener('mousemove',e=>{
 });
 document.addEventListener('mouseup',()=>{ dragTarget=null; });
 
-// Time & Date
 function updateTime(){
   const now = new Date();
   const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
