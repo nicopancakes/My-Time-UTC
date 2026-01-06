@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TV Player</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #0f0f1a;
+        color: #fff;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 300px;
+        background: #1c1c2b;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        overflow-y: auto;
+        border-right: 1px solid #333;
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: #2c2c3c;
+        color: #fff;
+    }
+
+    .category {
+        margin-bottom: 15px;
+    }
+
+    .category-title {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 10px;
+        border-radius: 5px;
+        transition: 0.2s;
+        background: #2c2c3c;
+    }
+
+    .category-title:hover {
+        background: #3b3b5a;
+    }
+
+    .episode-list {
+        list-style: none;
+        max-height: 300px;
+        overflow-y: auto;
+        margin-top: 5px;
+        display: none; /* Collapsed by default */
+    }
+
+    .episode-item {
+        padding: 8px 12px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #1c1c2b;
+    }
+
+    .episode-item:hover, .episode-item.active {
+        background: #3b3b5a;
+        transform: translateX(5px);
+    }
+
+    .episode-thumb {
+        width: 50px;
+        height: 28px;
+        background: #444;
+        border-radius: 3px;
+        flex-shrink: 0;
+    }
+
+    /* Video Area */
+    .video-container {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0f0f1a;
+        padding: 20px;
+    }
+
+    .video-wrapper {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    video {
+        width: 100%;
+        max-width: 900px;
+        border-radius: 10px;
+        border: 2px solid #444;
+        background: black;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #333;
+        margin-bottom: 20px;
+    }
+
+    .header .title {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .header .time {
+        font-size: 14px;
+        color: #aaa;
+    }
+
+    /* Scrollbar styling */
+    .sidebar::-webkit-scrollbar, .episode-list::-webkit-scrollbar {
+        width: 8px;
+    }
+    .sidebar::-webkit-scrollbar-thumb, .episode-list::-webkit-scrollbar-thumb {
+        background-color: #555;
+        border-radius: 4px;
+    }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Search episodes...">
+    </div>
+    <div id="categories"></div>
+</div>
+
+<div class="video-container">
+    <div class="header">
+        <div class="title" id="currentTitle">Select an Episode</div>
+        <div class="time" id="currentTime"></div>
+    </div>
+    <div class="video-wrapper">
+        <video id="player" controls>
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
+
+<script>
+const episodes = [
+    // The Simpsons S37
+    { title: "S37E2", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/The-Simpsons-Season-37-Episode-2.mp4" },
+    { title: "S37E3", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/The-Simpsons-Season-37-Episode-3.mp4" },
+    { title: "S37E4", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/The-Simpsons-Season-37-Episode-4.mp4" },
+    { title: "S37E5", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/The-Simpsons-Season-37-Episode-5.mp4" },
+    { title: "S37E6", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/The-Simpsons-Season-37-Episode-6.mp4" },
+    { title: "S37E7", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/The-Simpsons-Season-37-Episode-7-Sashes-to-Sashes.mp4" },
+    { title: "S37E8", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/12/The-Simpsons-Season-37-Episode-8-The-Day-of-the-Jack-up.mp4" },
+    { title: "S37E9", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/12/The-Simpsons-Season-37-Episode-9-Aunt-Misbehavin.mp4" },
+    { title: "S37E10", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/12/The-Simpsons-Season-37-Episode-10-Guess-Whos-Coming-to-Skinner.mp4" },
+    { title: "S37E11", show: "The Simpsons", season: "S37", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/12/The-Simpsons-Season-37-Episode-11-Parahormonal-Activity.mp4" },
+
+    // Smiling Friends S1
+    { title: "S1E1", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-1.mp4" },
+    { title: "S1E3", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-3.mp4" },
+    { title: "S1E4", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-4.mp4" },
+    { title: "S1E5", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-5.mp4" },
+    { title: "S1E6", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-6.mp4" },
+    { title: "S1E7", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-7.mp4" },
+    { title: "S1E8", show: "Smiling Friends", season: "S1", url: "https://ds.fairuseonly.xyz/wp-content/uploads/2024/04/smiling-friends-ep-8.mp4" },
+
+    // Smiling Friends S3
+    { title: "S3E1", show: "Smiling Friends", season: "S3", url: "https://sm.yourfairuse.xyz/wp-content/uploads/2025/11/Smiling-Friends-Season-3-Episode-1-Silly-Samuel.mp4" },
+    { title: "S3E2", show: "Smiling Friends", season: "S3", url: "https://sm.yourfairuse.xyz/wp-content/uploads/2025/11/Smiling-Friends-Season-3-Episode-2-Le-Voyage-Incroyable-de-Monsieur-Grenouille.mp4" },
+    { title: "S3E3", show: "Smiling Friends", season: "S3", url: "https://sm.yourfairuse.xyz/wp-content/uploads/2025/11/Smiling-Friends-Season-3-Episode-3-Mole-Man.mp4" },
+    { title: "S3E4", show: "Smiling Friends", season: "S3", url: "https://sm.yourfairuse.xyz/wp-content/uploads/2025/11/Smiling-Friends-Season-3-Episode-4-Curse-of-the-Green-Halloween-Witch.mp4" },
+    { title: "S3E5", show: "Smiling Friends", season: "S3", url: "https://sm.yourfairuse.xyz/wp-content/uploads/2025/11/youcut-20251110-094929678_jX3DdLni.mp4" },
+    { title: "S3E6", show: "Smiling Friends", season: "S3", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/Smiling-Friends-Season-3-Episode-6-Squim-Returns.mp4" },
+    { title: "S3E7", show: "Smiling Friends", season: "S3", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/11/Smiling-Friends-Season-3-Episode-7-Shmaloogles_1.mp4" },
+    { title: "S3E8", show: "Smiling Friends", season: "S3", url: "https://toon.yourfairuse.xyz/wp-content/uploads/2025/12/Smiling-Friends-Season-3-Episode-8-The-Glep.mp4" },
+];
+
+const categoriesDiv = document.getElementById('categories');
+const player = document.getElementById('player');
+const currentTitle = document.getElementById('currentTitle');
+
+// Group episodes by show and season
+const grouped = {};
+episodes.forEach(ep => {
+    const key = `${ep.show} ${ep.season}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(ep);
+});
+
+// Create categories
+Object.keys(grouped).forEach(cat => {
+    const catDiv = document.createElement('div');
+    catDiv.className = 'category';
+    
+    const title = document.createElement('div');
+    title.className = 'category-title';
+    title.textContent = cat;
+    
+    const list = document.createElement('ul');
+    list.className = 'episode-list';
+    
+    grouped[cat].forEach(ep => {
+        const li = document.createElement('li');
+        li.className = 'episode-item';
+        li.innerHTML = `<div class="episode-thumb"></div><span>${ep.title}</span>`;
+        li.addEventListener('click', () => {
+            document.querySelectorAll('.episode-item').forEach(item => item.classList.remove('active'));
+            li.classList.add('active');
+            player.src = ep.url;
+            currentTitle.textContent = `${cat} - ${ep.title}`;
+            player.play();
+        });
+        list.appendChild(li);
+    });
+
+    title.addEventListener('click', () => {
+        list.style.display = list.style.display === 'block' ? 'none' : 'block';
+    });
+
+    catDiv.appendChild(title);
+    catDiv.appendChild(list);
+    categoriesDiv.appendChild(catDiv);
+});
+
+// Update time
+function updateTime() {
+    const now = new Date();
+    document.getElementById('currentTime').textContent = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + ' ' +
+        now.toLocaleDateString([], {month:'short', day:'2-digit', year:'numeric'});
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// Search filter
+document.getElementById('search').addEventListener('input', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('.episode-item').forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(term) ? 'flex' : 'none';
+    });
+});
+
+// Video playback detection and popup
+let checkPlaybackInterval;
+
+player.addEventListener('error', () => {
+    alert('Video failed to play. Try disabling your Anti Virus Web-Guard or Refresh the App.');
+});
+
+player.addEventListener('play', () => {
+    clearInterval(checkPlaybackInterval);
+    checkPlaybackInterval = setInterval(() => {
+        if (player.readyState < 3 || player.paused) {
+            alert('Video seems to not be playing. Try disabling your Anti Virus Web-Guard or Refresh the App.');
+            clearInterval(checkPlaybackInterval);
+        }
+    }, 5000);
+});
+
+player.addEventListener('ended', () => {
+    clearInterval(checkPlaybackInterval);
+});
+</script>
+
+</body>
+</html>
